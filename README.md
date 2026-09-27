@@ -28,7 +28,7 @@ The implicit path depends on your LLM's judgment and isn't 100% reliable. When i
 
 ## What's in the skill
 
-`SKILL.md` is a topic index that routes the LLM to focused reference files in the `references/` directory. Topics include:
+`SKILL.md` uses progressive disclosure to route agents to focused reference files based on specific scenarios and tasks. It also provides core concepts, policy authoring defaults (favoring grants over legacy ACLs), common gotchas, and CLI quick reference. Reference topics include:
 
 - **Core mesh VPN:** exit nodes, subnet routers, MagicDNS, grants (and legacy ACLs), tagging
 - **Connectivity diagnostics:** DERP, NAT traversal, peer relay, `tailscale netcheck` / `ping` / `status`
