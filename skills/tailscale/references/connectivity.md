@@ -1,16 +1,18 @@
-# Connectivity: Peer Relay, DERP, and Tailnet Lock
+# Connectivity: Connection Architecture, NAT Traversal, and Tailnet Lock
 
-This reference covers how Tailscale connections are established (direct vs relayed), the DERP network, peer relays (user-operated relays), and Tailnet Lock (cryptographic node signing).
+> **Sister reference:** For peer relay configuration and custom DERP maps, see [derp-relays.md](derp-relays.md). For remote desktop setup (RDP, VNC, RustDesk), see [common-tasks.md](common-tasks.md). For connection diagnostic commands, see [cli-diagnostics.md](cli-diagnostics.md).
 
-> The Tailscale connection model is stable, but the specifics — peer-relay flags, DERP regions list, Tailnet Lock CLI subcommands — evolve. The shapes below are oriented toward the **why** and the **what to configure**; **WebFetch the matching page** for current flag names, region IDs, and step-by-step Tailnet Lock setup.
+This reference covers how Tailscale connections are established (direct vs relayed), the NAT traversal architecture, and Tailnet Lock (cryptographic node signing).
+
+> The Tailscale connection model is stable, but specific operational details evolve. The shapes below explain the **architecture** and **security lifecycle**; **WebFetch the matching page** for current flag names, region IDs, and step-by-step Tailnet Lock setup.
 
 ## Mental model
 
 Tailscale tries three connection paths in order, all WireGuard-encrypted end-to-end:
 
 1. **Direct peer-to-peer** — preferred. NAT traversal (STUN, port mapping) establishes a direct tunnel. Lowest latency, full throughput.
-2. **Peer relay** — fallback through a user-operated relay device on the tailnet. Lower latency than DERP because the relay sits on your infrastructure.
-3. **DERP relay** — final fallback through Tailscale's global relay network. Always works.
+2. **Peer relay** — fallback through a user-operated relay device on the tailnet. Lower latency than DERP because the relay sits on your infrastructure. See [derp-relays.md](derp-relays.md).
+3. **DERP relay** — final fallback through Tailscale's global relay network. Always works. See [derp-relays.md](derp-relays.md).
 
 All relays forward **encrypted** packets blindly — relays (peer or DERP) cannot decrypt traffic. The choice of path is per-peer-pair, not tailnet-wide.
 
@@ -28,54 +30,6 @@ The rule: a connection is relayed if both sides are Hard NAT, or if one side is 
 DERP also serves a second role: **connection negotiation**. Even direct connections use DERP briefly to exchange discovery (DISCO) packets before switching to direct.
 
 ## Canonical shapes
-
-### Configure a peer relay
-
-On the device that will relay (Linux/macOS/Windows — not iOS/Android):
-
-```bash
-tailscale set --relay-server-port=<port>
-```
-
-The port must be reachable from devices that will use this relay (public IP, or port-forwarded).
-
-Then in the tailnet policy file, grant relay capability:
-
-```json
-"grants": [{
-  "src": ["autogroup:member"],
-  "dst": ["tag:relay"],
-  "app": {
-    "tailscale.com/cap/relay": [] // the relay capability takes no parameters
-  }
-}]
-```
-
-Tag your relay devices with `tag:relay` (or whatever tag you used in the grant).
-
-### Customize the DERP map
-
-In the tailnet policy file, you can add custom DERP regions or omit defaults:
-
-```json
-"derpMap": {
-  "OmitDefaultRegions": false,
-  "Regions": {
-    "900": {
-      "RegionID": 900,
-      "RegionCode": "myderp",
-      "RegionName": "My Custom DERP",
-      "Nodes": [{
-        "Name": "myderp1",
-        "RegionID": 900,
-        "HostName": "derp.example.com"
-      }]
-    }
-  }
-}
-```
-
-The official DERP map (with current region IDs) is at `https://controlplane.tailscale.com/derpmap/default`. **Running your own DERP** is generally not recommended; peer relays solve the latency problem with less complexity and don't lose access to device sharing or cross-tailnet features.
 
 ### Tailnet Lock — initialize and operate
 
@@ -108,18 +62,6 @@ tailscale lock local-disable                       # Emergency: ignore TL on thi
 - Android devices can receive signatures but cannot sign.
 - Initial trust is "trust on first use" from the coordination server — verify `tailscale lock status` on multiple nodes after init.
 
-## Remote desktop over the tailnet (RDP, VNC, RustDesk)
-
-Reaching a desktop remotely is just a TCP connection over the tailnet. There is no port forwarding and no exposing the machine to the public internet. The remote device joins the tailnet, and you point your desktop client at its **MagicDNS hostname** or **100.x Tailscale IP**.
-
-**RDP (Windows).** Install Tailscale on the Windows PC (Pro, Enterprise, Education, or Server edition, with RDP enabled). From any tailnet device, open an RDP client. Options include the built-in **Remote Desktop Connection**, the **Windows App** on macOS, iOS, and Android, or **Remmina** and **GNOME Connections** on Linux. Enter the PC's Tailscale IP or MagicDNS name in the computer or PC-name field. Port `3389` is never exposed publicly, because the connection rides the encrypted tailnet. Disable key expiry on always-on target machines so they stay reachable.
-
-**RustDesk.** RustDesk normally needs a relay or ID server in the middle to broker connections. Over Tailscale that is unnecessary: devices connect directly, peer-to-peer, with no RustDesk server to run or rely on. In RustDesk, enable **Direct IP access** under Security (set a permanent password for headless machines), then connect to the target's Tailscale IP or MagicDNS name.
-
-**VNC** works the same way. Run the VNC server on the target, then connect the viewer to its Tailscale IP or MagicDNS name.
-
-Restrict who can reach these with tailnet policy. For example, allow only specific users or groups to reach `tcp:3389` on the target tag.
-
 ## Where to find current information
 
 ### Connection types & how Tailscale connects
@@ -133,23 +75,6 @@ Restrict who can reach these with tailnet policy. For example, allow only specif
 | Encryption model | https://tailscale.com/docs/concepts/tailscale-encryption |
 | STUN, port mapping, NAT traversal mechanics | https://tailscale.com/docs/reference/stun-protocol |
 | WireGuard with dynamic IPs | https://tailscale.com/docs/reference/wireguard-dynamic-ip |
-
-### DERP
-
-| Topic | Fetch |
-|---|---|
-| DERP servers — purpose, regions, custom DERP | https://tailscale.com/docs/reference/derp-servers |
-| Troubleshooting DERP routing | https://tailscale.com/docs/reference/troubleshooting/network-configuration/derp-routing |
-| Client message: no DERP connection | https://tailscale.com/docs/reference/messages/client/no-derp-connection |
-| Client message: no DERP home | https://tailscale.com/docs/reference/messages/client/no-derp-home |
-| Coordination server down | https://tailscale.com/docs/reference/coordination-server-down |
-| Coordination-server-issue client message | https://tailscale.com/docs/reference/messages/client/coordination-server-issue |
-
-### Peer relay
-
-| Topic | Fetch |
-|---|---|
-| Peer relay overview, setup, platform support | https://tailscale.com/docs/features/peer-relay |
 
 ### Tailnet Lock
 
@@ -179,16 +104,9 @@ The troubleshooting docs are organized as a hub with per-platform and per-topic 
 | A specific hard-NAT problem | https://tailscale.com/docs/reference/troubleshooting/network-configuration/hard-nat-issues |
 | CGNAT conflicts (with 100.64/10 ranges) | https://tailscale.com/docs/reference/troubleshooting/network-configuration/cgnat-conflicts |
 
-### Remote desktop
-
-| If the user wants to… | Fetch |
-|---|---|
-| Remote into a Windows PC (RDP) from elsewhere without exposing it to the internet | https://tailscale.com/docs/solutions/access-remote-desktops-using-windows-rdp |
-| Use RustDesk to reach another desktop, without running or paying for a relay server | https://tailscale.com/docs/solutions/access-remote-desktops-with-rustdesk |
-
 ### At-home access (client on each device, reach by MagicDNS or 100.x)
 
-These recipes put the Tailscale client on the devices and reach a home service by its MagicDNS name or `100.x` IP, with no ports exposed. (For a device that can't run Tailscale, use a subnet router instead: refer to `references/subnet-routers.md`.)
+These recipes put the Tailscale client on the devices and reach a home service by its MagicDNS name or `100.x` IP, with no ports exposed. (For a device that can't run Tailscale, use a subnet router instead: refer to [subnet-routers.md](subnet-routers.md).)
 
 | If the user wants to… | Fetch |
 |---|---|
@@ -198,10 +116,6 @@ These recipes put the Tailscale client on the devices and reach a home service b
 
 ## Answering pattern
 
-For **"why is my connection slow / relayed"** questions, the mental model + NAT matrix + `tailscale ping`/`netcheck` output (refer to `references/cli.md`) is usually enough to diagnose. Fetch the connection-types or troubleshooting pages only when you need exact criteria (for example "what counts as Easy NAT for a specific carrier").
-
-For **peer-relay setup** questions, the inline shape (flag + grant) is enough to start. Fetch the peer-relay page for platform-specific notes and edge cases.
+For **"why is my connection slow / relayed"** questions, the mental model + NAT matrix + `tailscale ping`/`netcheck` output (refer to [cli-diagnostics.md](cli-diagnostics.md)) is usually enough to diagnose. Fetch the connection-types or troubleshooting pages only when you need exact criteria (for example "what counts as Easy NAT for a specific carrier").
 
 For **Tailnet Lock**, the inline concepts (TLK, TKA, AUM, disablement secrets) are stable. **Always fetch** when the user is about to enable it for real — initial setup has admin-console steps and irreversibility risk (lost disablement secrets) that justify reading the live page.
-
-For **DERP custom deployment**, recommend against it by default; fetch the DERP-servers page if the user has a strong reason and needs the build/operate steps.

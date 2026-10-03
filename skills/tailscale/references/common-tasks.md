@@ -118,3 +118,24 @@ Device keys expire by default (180 days). When a key expires, the device must re
 - Tagged devices have expiry disabled by default
 
 For long-running servers, either disable key expiry or use tagged auth keys.
+
+---
+
+## Remote desktop over the tailnet (RDP, VNC, RustDesk)
+
+Reaching a desktop remotely is just a TCP connection over the tailnet. There is no port forwarding and no exposing the machine to the public internet. The remote device joins the tailnet, and you point your desktop client at its **MagicDNS hostname** or **100.x Tailscale IP**.
+
+**RDP (Windows).** Install Tailscale on the Windows PC (Pro, Enterprise, Education, or Server edition, with RDP enabled). From any tailnet device, open an RDP client. Options include the built-in **Remote Desktop Connection**, the **Windows App** on macOS, iOS, and Android, or **Remmina** and **GNOME Connections** on Linux. Enter the PC's Tailscale IP or MagicDNS name in the computer or PC-name field. Port `3389` is never exposed publicly, because the connection rides the encrypted tailnet. Disable key expiry on always-on target machines so they stay reachable.
+
+**RustDesk.** RustDesk normally needs a relay or ID server in the middle to broker connections. Over Tailscale that is unnecessary: devices connect directly, peer-to-peer, with no RustDesk server to run or rely on. In RustDesk, enable **Direct IP access** under Security (set a permanent password for headless machines), then connect to the target's Tailscale IP or MagicDNS name.
+
+**VNC** works the same way. Run the VNC server on the target, then connect the viewer to its Tailscale IP or MagicDNS name.
+
+Restrict who can reach these with tailnet policy. For example, allow only specific users or groups to reach `tcp:3389` on the target tag.
+
+### Remote desktop documentation
+
+| If the user wants to… | Fetch |
+|---|---|
+| Remote into a Windows PC (RDP) from elsewhere without exposing it to the internet | https://tailscale.com/docs/solutions/access-remote-desktops-using-windows-rdp |
+| Use RustDesk to reach another desktop, without running or paying for a relay server | https://tailscale.com/docs/solutions/access-remote-desktops-with-rustdesk |
