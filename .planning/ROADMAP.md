@@ -57,7 +57,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 03-01: Execute validation, disclosure audit, and token budget checks
+- [ ] 03-01-PLAN.md — Build verification runner, validate link integrity, and certify compliance
 
 ## Progress
 
