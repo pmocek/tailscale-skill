@@ -6,13 +6,14 @@ Refactor and reorganize the Tailscale skill reference documentation into modular
 
 ## Phases
 
-- [ ] **Phase 1: Reference Decomposition** - Decompose oversized reference files (`cli.md`, `connectivity.md`, `tsnet.md`) into modular files adhering to the ≤2,000 token limit.
+- [x] **Phase 1: Reference Decomposition** - Decompose oversized reference files (`cli.md`, `connectivity.md`, `tsnet.md`) into modular files adhering to the ≤2,000 token limit. (completed 2026-10-02)
 - [ ] **Phase 2: Progressive Disclosure Routing** - Update `SKILL.md` to wire all orphaned and newly split reference files into clear user task categories.
 - [ ] **Phase 3: Validation and Verification** - Run structural, disclosure, and token budget validation suites to verify complete compliance.
 
 ## Phase Details
 
 ### Phase 1: Reference Decomposition
+
 **Goal**: Partition `cli.md`, `connectivity.md`, and `tsnet.md` so that all reference documents in `skills/tailscale/references/` are ≤2,000 tokens.
 **Depends on**: Nothing (first phase)
 **Requirements**: [REF-01, REF-02, REF-03]
@@ -20,12 +21,15 @@ Refactor and reorganize the Tailscale skill reference documentation into modular
   1. `references/tsnet.md` is split into `references/tsnet.md` and `references/tsnet-patterns.md`, each ≤2,000 tokens.
   2. `references/connectivity.md` is split into `references/connectivity.md` and `references/derp-relays.md`, each ≤2,000 tokens.
   3. `references/cli.md` is streamlined and partitioned (with diagnostics isolated if needed) so that all CLI reference material is ≤2,000 tokens.
-**Plans**: 1 plan
+
+**Plans**: 1/1 plans complete
 
 Plans:
-- [ ] 01-01: Split tsnet, connectivity, and cli references to satisfy 2,000 token budget
+- [x] 01-PLAN.md
+- [x] 01-01: Split tsnet, connectivity, and cli references to satisfy 2,000 token budget
 
 ### Phase 2: Progressive Disclosure Routing
+
 **Goal**: Wire all orphaned and newly extracted reference files into `skills/tailscale/SKILL.md` with explicit task triggers.
 **Depends on**: Phase 1
 **Requirements**: [ROUT-01, ROUT-02, ROUT-03, ROUT-04]
@@ -34,12 +38,14 @@ Plans:
   2. `references/cli.md` is directly referenced in the CLI section of `SKILL.md`.
   3. New split files (`derp-relays.md`, `tsnet-patterns.md`) are linked under their respective task categories.
   4. All internal markdown relative links resolve without errors.
+
 **Plans**: 1 plan
 
 Plans:
 - [ ] 02-01: Update SKILL.md routing table and verify all relative links
 
 ### Phase 3: Validation and Verification
+
 **Goal**: Run skill-forge validation, disclosure audit, and token budget analysis to prove zero structural or budget defects.
 **Depends on**: Phase 2
 **Requirements**: [QUAL-01, QUAL-02, QUAL-03]
@@ -47,6 +53,7 @@ Plans:
   1. `validate_skill.py --strict` passes with 0 errors.
   2. `audit_disclosure.py` passes with 0 orphaned reference errors.
   3. `token_estimate.py` reports 0 budget violations across all Tier 3 files.
+
 **Plans**: 1 plan
 
 Plans:
@@ -59,6 +66,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Reference Decomposition | 0/1 | Not started | - |
+| 1. Reference Decomposition | 1/1 | Complete    | 2026-10-02 |
 | 2. Progressive Disclosure Routing | 0/1 | Not started | - |
 | 3. Validation and Verification | 0/1 | Not started | - |

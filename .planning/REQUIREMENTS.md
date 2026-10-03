@@ -7,9 +7,9 @@
 
 ### Reference Decomposition (Token Budget Compliance)
 
-- [ ] **REF-01**: Refactor `skills/tailscale/references/cli.md` into standard commands and extract detailed diagnostics to ensure each resulting file is ≤2,000 tokens.
-- [ ] **REF-02**: Split `skills/tailscale/references/connectivity.md` by moving DERP server mapping and relay operations into a dedicated `derp-relays.md` file, bringing `connectivity.md` to ≤2,000 tokens.
-- [ ] **REF-03**: Split `skills/tailscale/references/tsnet.md` by moving advanced architectural patterns (reverse proxies, TLS, Prometheus metrics) into `tsnet-patterns.md`, bringing `tsnet.md` to ≤2,000 tokens.
+- [x] **REF-01**: Refactor `skills/tailscale/references/cli.md` into standard commands and extract detailed diagnostics to ensure each resulting file is ≤2,000 tokens.
+- [x] **REF-02**: Split `skills/tailscale/references/connectivity.md` by moving DERP server mapping and relay operations into a dedicated `derp-relays.md` file, bringing `connectivity.md` to ≤2,000 tokens.
+- [x] **REF-03**: Split `skills/tailscale/references/tsnet.md` by moving advanced architectural patterns (reverse proxies, TLS, Prometheus metrics) into `tsnet-patterns.md`, bringing `tsnet.md` to ≤2,000 tokens.
 
 ### Progressive Disclosure Routing (Link Graph & Orphans)
 
@@ -45,9 +45,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REF-01 | Phase 1 | Pending |
-| REF-02 | Phase 1 | Pending |
-| REF-03 | Phase 1 | Pending |
+| REF-01 | Phase 1 | Complete |
+| REF-02 | Phase 1 | Complete |
+| REF-03 | Phase 1 | Complete |
 | ROUT-01 | Phase 2 | Pending |
 | ROUT-02 | Phase 2 | Pending |
 | ROUT-03 | Phase 2 | Pending |
