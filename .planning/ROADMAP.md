@@ -39,7 +39,7 @@ Plans:
   3. New split files (`derp-relays.md`, `tsnet-patterns.md`) are linked under their respective task categories.
   4. All internal markdown relative links resolve without errors.
 
-**Plans**: 1/1 plans complete
+**Plans**: 1/1 plans executed
 
 Plans:
 - [x] 02-01: Update SKILL.md routing table and verify all relative links
@@ -67,5 +67,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Reference Decomposition | 1/1 | Complete    | 2026-10-02 |
-| 2. Progressive Disclosure Routing | 0/1 | Not started | - |
+| 2. Progressive Disclosure Routing | 1/1 | Complete    | 2026-10-02 |
 | 3. Validation and Verification | 1/1 | Complete    | 2026-10-02 |

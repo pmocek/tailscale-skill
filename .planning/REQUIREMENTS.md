@@ -13,9 +13,9 @@
 
 ### Progressive Disclosure Routing (Link Graph & Orphans)
 
-- [ ] **ROUT-01**: Link previously orphaned reference files (`api.md`, `border0.md`, `installation.md`) directly in `skills/tailscale/SKILL.md` under intuitive scenario categories.
-- [ ] **ROUT-02**: Link `references/cli.md` explicitly within the CLI Quick Reference section of `skills/tailscale/SKILL.md`.
-- [ ] **ROUT-03**: Link newly created split references (`derp-relays.md`, `tsnet-patterns.md`) in `skills/tailscale/SKILL.md`.
+- [x] **ROUT-01**: Link previously orphaned reference files (`api.md`, `border0.md`, `installation.md`) directly in `skills/tailscale/SKILL.md` under intuitive scenario categories.
+- [x] **ROUT-02**: Link `references/cli.md` explicitly within the CLI Quick Reference section of `skills/tailscale/SKILL.md`.
+- [x] **ROUT-03**: Link newly created split references (`derp-relays.md`, `tsnet-patterns.md`) in `skills/tailscale/SKILL.md`.
 - [x] **ROUT-04**: Validate that all internal markdown relative links between `SKILL.md` and `references/*.md` resolve accurately without broken references.
 
 ### Compliance & Quality Verification
@@ -48,9 +48,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REF-01 | Phase 1 | Complete |
 | REF-02 | Phase 1 | Complete |
 | REF-03 | Phase 1 | Complete |
-| ROUT-01 | Phase 2 | Pending |
-| ROUT-02 | Phase 2 | Pending |
-| ROUT-03 | Phase 2 | Pending |
+| ROUT-01 | Phase 2 | Complete |
+| ROUT-02 | Phase 2 | Complete |
+| ROUT-03 | Phase 2 | Complete |
 | ROUT-04 | Phase 2 | Complete |
 | QUAL-01 | Phase 3 | Complete |
 | QUAL-02 | Phase 3 | Complete |
