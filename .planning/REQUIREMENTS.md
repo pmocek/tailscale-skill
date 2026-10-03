@@ -16,13 +16,13 @@
 - [ ] **ROUT-01**: Link previously orphaned reference files (`api.md`, `border0.md`, `installation.md`) directly in `skills/tailscale/SKILL.md` under intuitive scenario categories.
 - [ ] **ROUT-02**: Link `references/cli.md` explicitly within the CLI Quick Reference section of `skills/tailscale/SKILL.md`.
 - [ ] **ROUT-03**: Link newly created split references (`derp-relays.md`, `tsnet-patterns.md`) in `skills/tailscale/SKILL.md`.
-- [ ] **ROUT-04**: Validate that all internal markdown relative links between `SKILL.md` and `references/*.md` resolve accurately without broken references.
+- [x] **ROUT-04**: Validate that all internal markdown relative links between `SKILL.md` and `references/*.md` resolve accurately without broken references.
 
 ### Compliance & Quality Verification
 
-- [ ] **QUAL-01**: Pass `validate_skill.py --strict` from skill-forge with zero errors.
-- [ ] **QUAL-02**: Pass `audit_disclosure.py` with zero orphaned reference errors.
-- [ ] **QUAL-03**: Pass `token_estimate.py` with zero files exceeding the 2,000-token budget ceiling.
+- [x] **QUAL-01**: Pass `validate_skill.py --strict` from skill-forge with zero errors.
+- [x] **QUAL-02**: Pass `audit_disclosure.py` with zero orphaned reference errors.
+- [x] **QUAL-03**: Pass `token_estimate.py` with zero files exceeding the 2,000-token budget ceiling.
 
 ## v2 Requirements
 
@@ -51,10 +51,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ROUT-01 | Phase 2 | Pending |
 | ROUT-02 | Phase 2 | Pending |
 | ROUT-03 | Phase 2 | Pending |
-| ROUT-04 | Phase 2 | Pending |
-| QUAL-01 | Phase 3 | Pending |
-| QUAL-02 | Phase 3 | Pending |
-| QUAL-03 | Phase 3 | Pending |
+| ROUT-04 | Phase 2 | Complete |
+| QUAL-01 | Phase 3 | Complete |
+| QUAL-02 | Phase 3 | Complete |
+| QUAL-03 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 10 total
