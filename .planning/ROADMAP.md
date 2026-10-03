@@ -7,7 +7,7 @@ Refactor and reorganize the Tailscale skill reference documentation into modular
 ## Phases
 
 - [x] **Phase 1: Reference Decomposition** - Decompose oversized reference files (`cli.md`, `connectivity.md`, `tsnet.md`) into modular files adhering to the ≤2,000 token limit. (completed 2026-10-02)
-- [ ] **Phase 2: Progressive Disclosure Routing** - Update `SKILL.md` to wire all orphaned and newly split reference files into clear user task categories.
+- [x] **Phase 2: Progressive Disclosure Routing** - Update `SKILL.md` to wire all orphaned and newly split reference files into clear user task categories. (completed 2026-10-02)
 - [ ] **Phase 3: Validation and Verification** - Run structural, disclosure, and token budget validation suites to verify complete compliance.
 
 ## Phase Details
@@ -39,10 +39,10 @@ Plans:
   3. New split files (`derp-relays.md`, `tsnet-patterns.md`) are linked under their respective task categories.
   4. All internal markdown relative links resolve without errors.
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans complete
 
 Plans:
-- [ ] 02-01: Update SKILL.md routing table and verify all relative links
+- [x] 02-01: Update SKILL.md routing table and verify all relative links
 
 ### Phase 3: Validation and Verification
 
