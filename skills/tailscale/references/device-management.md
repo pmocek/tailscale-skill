@@ -13,7 +13,7 @@ Four overlapping layers of control:
 3. **MDM deployment** — silent installation + locked-down configuration of the client itself, across a managed fleet (macOS/Windows/iOS/Android).
 4. **SCIM provisioning** — automated user/group lifecycle from your IdP (Okta, Entra, Google Workspace). When someone is deactivated upstream, their Tailscale access ends with it.
 
-For programmatic device management at scale (bulk add/remove, listing devices, approving via API), use the REST API — refer to `references/api.md`.
+For programmatic device management at scale (bulk add/remove, listing devices, approving via API), use the REST API — refer to [api.md](api.md).
 
 ## Canonical shapes
 

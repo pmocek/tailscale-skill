@@ -17,7 +17,7 @@ An exit node routes all non-Tailscale internet traffic through a specific device
 
 ## Setup by platform
 
-Install Tailscale on both the exit node and client devices first (refer to `references/installation.md`), then follow the platform-specific steps below.
+Install Tailscale on both the exit node and client devices first (refer to [installation.md](installation.md)), then follow the platform-specific steps below.
 
 ### Linux (recommended — best performance)
 

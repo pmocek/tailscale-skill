@@ -49,4 +49,4 @@ Hub (fetch when no row matches, or to browse the current set): https://tailscale
 1. Match the user's quoted message or health warning to a row. If they paraphrase, match on the symptom (for example "it says something about a relay server" maps to the DERP rows).
 2. WebFetch the matching page and give the cause and fix from that page.
 3. If nothing matches, WebFetch the hub to check the current set, since Tailscale adds message pages over time.
-4. For broader connectivity or platform problems that are not a specific named message, use `references/connectivity.md` (troubleshooting hub and sections) instead.
+4. For broader connectivity or platform problems that are not a specific named message, use [connectivity.md](connectivity.md) (troubleshooting hub and sections) or [derp-relays.md](derp-relays.md) instead.

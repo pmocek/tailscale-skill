@@ -11,12 +11,12 @@ Tailscale replaces traditional VPN/bastion/jump-host infrastructure with identit
 - **Infrastructure access** — direct peer connections + ACL grants by group/tag; no public IPs or open ports required. Identity comes from your IdP (Okta, Entra, Google Workspace, others.).
 - **Ephemeral nodes** — short-lived devices that auto-remove after ~30–60 min idle. Used for CI runners, containers, serverless. Created via ephemeral auth keys or OAuth clients with `?ephemeral=true`.
 - **CI/CD integration** — the `tailscale/github-action` adds an ephemeral, tagged node to a GitHub Actions runner for the duration of the workflow. Recommended auth method is workload identity federation (no long-lived secrets).
-- **Site-to-site** — Linux subnet routers on each network advertise CIDRs into the tailnet; SNAT must be disabled for bidirectional traffic. Also refer to `references/subnet-routers.md`.
+- **Site-to-site** — Linux subnet routers on each network advertise CIDRs into the tailnet; SNAT must be disabled for bidirectional traffic. Also refer to [subnet-routers.md](subnet-routers.md).
 - **App connectors** — DNS-based routing (instead of CIDR-based) to SaaS apps and cloud-managed services. Useful for predictable egress IPs and IP allowlists at SaaS providers.
 - **Auth keys** — non-interactive device authentication. Combine flags as needed: `reusable` × `ephemeral` × `preapproved` × `tagged`. Default expiry 90 days, max 90.
 - **Terraform provider** — `tailscale_key`, `tailscale_acl`, `tailscale_dns_*`, and device resources for managing the tailnet as code.
 
-Most enterprise patterns are wired up in the tailnet policy file via groups (humans), tags (machines/services), and grants. Refer to `references/access-control.md` for grant/group/tag syntax in depth.
+Most enterprise patterns are wired up in the tailnet policy file via groups (humans), tags (machines/services), and grants. Refer to [access-control.md](access-control.md) for grant/group/tag syntax in depth.
 
 ## Canonical shapes
 
