@@ -178,6 +178,16 @@ spec:
   replicas: 3
 ```
 
+**API Server Access (`tailscale configure kubeconfig`):**
+
+Configure local `kubectl` to access a cluster whose API server is exposed over Tailscale:
+
+```bash
+tailscale configure kubeconfig <cluster-hostname>
+```
+
+This updates `~/.kube/config` with a cluster entry routed through the tailnet, enabling secure, authenticated `kubectl` access without public API endpoints.
+
 ### Kubernetes operator — where to find current information
 
 | User is asking about… | Fetch |

@@ -1,48 +1,51 @@
 # Tailscale CLI
 
-The `tailscale` command-line interface manages your device within your tailnet. Available on Linux, macOS, and Windows (no CLI on iOS/Android).
+> **Sister reference:** For diagnostic workflows, netcheck, ping modes, and network inspection, see [cli-diagnostics.md](cli-diagnostics.md).
 
-> **This reference exists so agents can drive the CLI directly.** Unlike the other references, the goal here isn't to describe Tailscale to a user — it's to give agents enough to *operate* the binary on the user's machine. Keep two fallbacks in mind, in this order:
->
-> 1. **`tailscale help <subcommand>`** — always current, always available if `tailscale` is installed, no network round-trip. Use this when you need a flag or option not listed here, or when an example below fails with an unknown flag (the CLI evolves).
-> 2. **https://tailscale.com/docs/reference/tailscale-cli** — the canonical CLI reference page. Fetch when `tailscale help` isn't available, like when explaining a command before installation or when documenting for a user on a different platform).
->
-> Before suggesting an unfamiliar flag or subcommand from memory, verify it exists with `tailscale help <command>`.
+The `tailscale` command-line interface manages local device state within your tailnet (available on Linux, macOS, and Windows; no CLI on iOS/Android).
+
+> **Operating fallbacks:**
+> 1. `tailscale help <subcommand>` — always current, available offline. Verify unfamiliar flags here before running.
+> 2. `https://tailscale.com/docs/reference/tailscale-cli` — canonical reference documentation.
+
+---
 
 ## CLI location by platform
 
-- **Linux**: `tailscale` is in your `$PATH` after installation
-- **macOS (standalone)**: Install CLI integration from Tailscale client **Settings > CLI integration > Install Now** (macOS 13+). Installs to `/usr/local/bin/tailscale`.
-- **macOS (App Store)**: CLI is bundled inside the app — run with `/Applications/Tailscale.app/Contents/MacOS/Tailscale <command>`. Set `TAILSCALE_BE_CLI=1` in scripts to force CLI mode.
-- **Windows**: `tailscale` is available in Command Prompt / PowerShell after installation
+- **Linux**: Available on standard `$PATH`.
+- **macOS (standalone)**: Install via Tailscale menu **Settings > CLI integration > Install Now** (`/usr/local/bin/tailscale`).
+- **macOS (App Store)**: Bundled inside `/Applications/Tailscale.app/Contents/MacOS/Tailscale`. Set `TAILSCALE_BE_CLI=1` in scripts.
+- **Windows**: Available in PowerShell / Command Prompt after standard installation.
+
+---
 
 ## Connection & authentication
 
 ### `tailscale up`
 
-Connect and authenticate your device. On first run, opens a browser for SSO login.
+Connect and authenticate the device to the tailnet:
 
 ```bash
-tailscale up                              # Interactive login
-tailscale up --auth-key=tskey-auth-xxxxx  # Headless (servers, CI)
-tailscale up --login-server=https://...   # Custom control server
+tailscale up                              # Interactive web/SSO login
+tailscale up --auth-key=tskey-auth-xxxxx  # Unattended headless login (servers, CI)
+tailscale up --login-server=https://...   # Self-hosted coordination server (headscale)
 ```
 
 Key flags:
-- `--auth-key` — Auth key for unattended setup
-- `--login-server` — Custom coordination server URL
-- `--accept-routes` — Accept subnet routes advertised by others (Linux)
-- `--accept-dns` — Accept DNS configuration from the tailnet (default true)
-- `--hostname` — Override the machine name
-- `--shields-up` — Block all incoming connections (outbound only)
-- `--force-reauth` — Force re-authentication even if already logged in
-- `--reset` — Reset unspecified settings to default values
-- `--advertise-tags` — Request specific tags (must be pre-authorized)
-- `--timeout` — Maximum wait time for login (default 0, wait forever)
+- `--auth-key=<key>`: Pre-authenticated key for headless provisioning.
+- `--login-server=<url>`: Custom coordination control URL.
+- `--accept-routes`: Accept advertised subnet routes (Linux).
+- `--accept-dns`: Accept tailnet DNS settings (default true).
+- `--hostname=<name>`: Override machine hostname.
+- `--shields-up`: Block all incoming connections.
+- `--force-reauth`: Force session re-authentication.
+- `--reset`: Reset unspecified configuration flags to defaults.
+- `--advertise-tags=<tags>`: Request pre-approved ACL tags.
+- `--timeout=<dur>`: Maximum authentication wait time.
 
 ### `tailscale down`
 
-Disconnect from the tailnet without logging out. The device stays registered.
+Disconnect from the tailnet without revoking registration:
 
 ```bash
 tailscale down
@@ -51,333 +54,172 @@ tailscale down
 ### `tailscale login` and `tailscale logout`
 
 ```bash
-tailscale login               # Start login flow (alternative to `up`)
-tailscale logout              # Deregister device from tailnet entirely
+tailscale login               # Initiate login flow without applying changes
+tailscale logout              # Deregister and remove device from tailnet
 ```
-
-`logout` removes the device from the tailnet. Use `down` to temporarily disconnect.
 
 ### `tailscale switch`
 
-Switch between multiple tailnet accounts (Fast User Switching):
+Switch between multiple tailnet user profiles:
 
 ```bash
-tailscale switch              # List available profiles
-tailscale switch <tailnet>    # Switch to a specific profile
+tailscale switch              # List local profiles
+tailscale switch <tailnet>    # Switch to active profile
 ```
 
-Profiles are stored locally. You can set a nickname for each profile.
+---
 
-## Status & information
+## Status & reachability
 
 ### `tailscale status`
 
-Show all devices on your tailnet with their IPs, hostnames, and connection status:
+List tailnet devices with IPs, hostnames, and connectivity:
 
 ```bash
-tailscale status              # Human-readable table
-tailscale status --json       # Full JSON output (for scripting)
-tailscale status --peers=false  # Only show this device
+tailscale status              # Formatted status table
+tailscale status --json       # Machine-readable JSON output
+tailscale status --peers=false# Show only local node state
 ```
 
-The `--json` output includes device IDs, public keys, last seen times, and connection details.
-
-### `tailscale ip`
+### `tailscale ip` and `tailscale whois`
 
 ```bash
-tailscale ip                  # Show this device's Tailscale IPs (v4 and v6)
-tailscale ip -4               # IPv4 only
-tailscale ip -6               # IPv6 only
-tailscale ip <hostname>       # Show IP of another device
-```
-
-### `tailscale whois`
-
-Look up who owns a Tailscale IP address:
-
-```bash
-tailscale whois 100.64.1.2    # Shows device owner, hostname, tags
+tailscale ip                  # Show local IPv4 and IPv6 addresses
+tailscale ip -4 / -6          # Show IPv4 or IPv6 address only
+tailscale ip <hostname>       # Resolve Tailscale IP for peer
+tailscale whois 100.64.1.2    # Inspect device owner, tags, and machine details
 ```
 
 ### `tailscale version`
 
 ```bash
-tailscale version             # Client version
-tailscale version --daemon    # Daemon version (may differ on some platforms)
+tailscale version             # Client binary version
+tailscale version --daemon    # Running background daemon version
 ```
 
-### `tailscale netcheck`
-
-Check NAT type, UDP connectivity, and DERP relay latency:
+### Reachability checks
 
 ```bash
-tailscale netcheck
+tailscale ping <hostname>     # Probe peer; reports direct p2p vs DERP relay
+tailscale netcheck            # Inspect local NAT type, UDP status, nearest DERP
 ```
 
-Reports: NAT mapping type, port mapping (UPnP/NAT-PMP/PCP), preferred DERP region, and latency to all DERP servers. Useful for diagnosing connectivity issues behind firewalls.
+*For diagnostic ping flags (`--icmp`, `--peerapi`, `--until-direct`) and network tools (`nc`, `dns`, `metrics`), see [cli-diagnostics.md](cli-diagnostics.md).*
 
-### `tailscale ping`
-
-Test connectivity to a specific device:
-
-```bash
-tailscale ping <hostname>     # Ping via Tailscale (TSMP)
-tailscale ping --tsmp <host>  # Explicit TSMP ping
-tailscale ping --icmp <host>  # ICMP ping through WireGuard tunnel
-tailscale ping --peerapi <host>  # HTTP request via peer API
-```
-
-Shows whether the connection is direct (peer-to-peer) or relayed through a DERP server.
+---
 
 ## Configuration (`tailscale set`)
 
-`tailscale set` modifies device configuration without reconnecting:
+Modify device configuration without restarting the tunnel:
 
 ```bash
 tailscale set --ssh                          # Enable Tailscale SSH server
-tailscale set --advertise-exit-node          # Advertise as exit node
-tailscale set --exit-node=<ip-or-hostname>   # Use a specific exit node
-tailscale set --exit-node=                   # Stop using exit node
+tailscale set --advertise-exit-node          # Advertise as an exit node
+tailscale set --exit-node=<ip-or-host>       # Route traffic via exit node ("" to clear)
 tailscale set --advertise-routes=10.0.0.0/24 # Advertise subnet routes
-tailscale set --accept-routes                # Accept routes from others (Linux)
+tailscale set --accept-routes                # Accept routes from others
 tailscale set --hostname=my-server           # Set device hostname
-tailscale set --shields-up                   # Block all incoming connections
-tailscale set --operator=$USER               # Allow non-root user to manage
+tailscale set --shields-up                   # Block incoming connections
+tailscale set --operator=$USER               # Delegate CLI control to non-root user
 tailscale set --auto-update                  # Enable auto-updates
-tailscale set --webclient                    # Enable web client interface
+tailscale set --webclient                    # Enable web client UI
 tailscale set --advertise-connector          # Advertise as an app connector
-tailscale set --exit-node-allow-lan-access   # Allow LAN access while using exit node
+tailscale set --exit-node-allow-lan-access   # Allow local LAN access with exit node
 ```
 
-Most `up` flags are also accepted by `set` (no reconnect required). `tailscale help set` lists the full current set.
+---
 
 ## Serve & Funnel
 
-### `tailscale serve`
+Expose local services securely. For tailnet policy configuration and Funnel ACL grants, see [sharing-and-publishing.md](sharing-and-publishing.md).
 
-Expose a local service to your tailnet (private — only tailnet members can access):
-
-```bash
-# Proxy local port 3000 over HTTPS on port 443
-tailscale serve https / http://localhost:3000
-
-# Serve a local directory
-tailscale serve https /docs /path/to/files
-
-# Serve static text
-tailscale serve https /health text:"OK"
-
-# TCP forwarding (raw, not HTTPS)
-tailscale serve tcp:5432 tcp://localhost:5432
-
-# TLS-terminated TCP
-tailscale serve tls-terminated-tcp:5432 tcp://localhost:5432
-
-# Show current serve configuration
-tailscale serve status
-
-# Remove a handler
-tailscale serve https /docs off
-
-# Reset all serve config
-tailscale serve reset
-```
-
-Tailscale automatically provisions a TLS certificate for your device's FQDN (`machine.tailnet-name.ts.net`).
-
-### `tailscale funnel`
-
-Like `serve`, but exposes the service to the **public internet** (not just your tailnet):
+### `tailscale serve` (tailnet-private)
 
 ```bash
-# Expose local port 3000 publicly
-tailscale funnel https / http://localhost:3000
-
-# Show funnel status
-tailscale funnel status
-
-# Turn off funnel
-tailscale funnel reset
+tailscale serve https / http://localhost:3000   # Proxy local port to HTTPS 443
+tailscale serve https /docs /path/to/files       # Serve static directory
+tailscale serve tcp:5432 tcp://localhost:5432   # TCP forwarding
+tailscale serve status                           # Inspect serve configuration
+tailscale serve reset                            # Clear serve configuration
 ```
 
-Key differences from serve:
-- Funnel traffic routes through Tailscale's servers (not peer-to-peer)
-- Available on ports 443, 8443, and 10000 only
-- Requires enabling Funnel in the tailnet policy file (`nodeAttr` with `funnel` capability)
-- Anyone on the internet can access the URL
+Automatically provisions Let's Encrypt certificates for the device FQDN (`machine.tailnet.ts.net`).
+
+### `tailscale funnel` (public internet)
+
+```bash
+tailscale funnel https / http://localhost:3000  # Expose service to public internet
+tailscale funnel status                          # Inspect funnel configuration
+tailscale funnel reset                           # Disable public funnel
+```
+
+*Traffic relays via Tailscale edge infrastructure on ports 443, 8443, or 10000; requires `funnel` node attribute.*
+
+---
 
 ## File transfer
 
+For transfer permissions and policy rules, see [sharing-and-publishing.md](sharing-and-publishing.md).
+
 ### Taildrop (`tailscale file`)
 
-Send and receive files directly between tailnet devices:
-
 ```bash
-# Send files
-tailscale file cp photo.jpg my-laptop:
-tailscale file cp *.pdf my-server:
-
-# Receive files (waits for incoming transfers)
-tailscale file get /path/to/download/dir
+tailscale file cp photo.jpg my-laptop:       # Send file to destination peer
+tailscale file get /path/to/target/dir       # Receive pending transfers
 ```
 
 ### Taildrive (`tailscale drive`)
 
-Share persistent directories between devices:
-
 ```bash
-tailscale drive share docs /home/user/Documents  # Share a directory
-tailscale drive share media /mnt/media            # Share another
-tailscale drive list                               # List active shares
-tailscale drive rename docs documents              # Rename a share
-tailscale drive unshare docs                       # Stop sharing
+tailscale drive share docs /path/to/docs     # Share directory
+tailscale drive list                         # List active shares
+tailscale drive unshare docs                 # Stop sharing directory
 ```
 
-Shared directories are accessible at `\\machine\tailscale\share-name` (Windows) or via WebDAV.
-
-## Network diagnostics
-
-Use these commands together to diagnose connectivity issues:
-
-1. `tailscale status` — Is the device online? What IP does it have?
-2. `tailscale ping <host>` — Can you reach it? Is it direct or relayed?
-3. `tailscale netcheck` — What's your NAT type? Can you do UDP?
-4. `tailscale status --json` — Full details for scripting/debugging
-
-### `tailscale nc`
-
-Netcat-like tool for testing TCP connections through Tailscale:
-
-```bash
-tailscale nc <hostname> <port>
-```
-
-### `tailscale dns`
-
-Query Tailscale DNS:
-
-```bash
-tailscale dns status          # Show DNS configuration
-tailscale dns query <name>    # Look up a name via Tailscale DNS
-```
+---
 
 ## Security
 
-### `tailscale lock`
+### `tailnet lock`
 
-Manage Tailnet Lock (requires devices to be signed by trusted keys):
+Manage cryptographic node signing. For architecture, TKA keys, and recovery secrets, see [connectivity.md](connectivity.md).
 
 ```bash
-tailscale lock init                 # Initialize tailnet lock
-tailscale lock status               # Check lock status
-tailscale lock add <node-key>       # Add a trusted signing key
-tailscale lock remove <node-key>    # Remove a signing key
-tailscale lock sign <node-key>      # Sign a node's key
-tailscale lock disable <secret>     # Disable tailnet lock (emergency)
-tailscale lock revoke-keys          # Revoke compromised keys
-tailscale lock log                  # View lock audit log
-tailscale lock local-disable        # Disable locally (this node only)
+tailscale lock init                 # Initialize tailnet lock (prints disablement secrets)
+tailscale lock status               # Inspect TKA status and signing nodes
+tailscale lock sign <node-key>      # Sign device join request
+tailscale lock add / remove <tlpub> # Manage trusted signing keys
+tailscale lock revoke-keys <tlpub>  # Revoke compromised signing keys
+tailscale lock disable <secret>     # Emergency disable with recovery secret
 ```
 
 ### `tailscale cert`
 
-Provision TLS certificates for your device's Tailscale FQDN:
-
 ```bash
-tailscale cert machine.tailnet-name.ts.net
+tailscale cert machine.tailnet-name.ts.net   # Provision TLS cert/key files for node FQDN
 ```
 
-Creates `.crt` and `.key` files. Certificates are automatically renewed. Useful for services that need HTTPS (web servers, databases).
+---
 
-## Administration
+## Platform administration
 
-### `tailscale update`
+- **Synology NAS configuration**: `tailscale configure synology`
+- **Kubernetes cluster access (`kubeconfig`)**: See [containers.md](containers.md).
+- **Client updates (`tailscale update`)**: See [installation.md](installation.md).
+- **Shell tab completion**: See [installation.md](installation.md).
+- **MDM system policies (`tailscale syspolicy`)**: See [device-management.md](device-management.md).
+- **Diagnostics and telemetry (`tailscale bugreport`, `metrics`)**: See [cli-diagnostics.md](cli-diagnostics.md).
 
-```bash
-tailscale update              # Check for and apply updates
-tailscale update --check      # Check only, don't install
-tailscale update --yes        # Auto-confirm update
-tailscale update --track=stable  # Switch release track (stable/unstable)
-```
-
-### `tailscale bugreport`
-
-Generate a diagnostic report for Tailscale support:
-
-```bash
-tailscale bugreport           # Prints a bug report ID
-```
-
-### `tailscale configure`
-
-Platform-specific configuration helpers:
-
-```bash
-tailscale configure kubeconfig <hostname>   # Set up kubectl via Tailscale
-tailscale configure synology                # Configure Synology NAS
-```
-
-### `tailscale metrics`
-
-```bash
-tailscale metrics             # Prometheus-format metrics
-tailscale metrics print       # Human-readable metrics
-```
-
-### `tailscale syspolicy`
-
-View managed system policies (MDM-set values):
-
-```bash
-tailscale syspolicy list      # Show all managed policies
-tailscale syspolicy reload    # Reload policies from MDM
-```
-
-## Tab completion
-
-```bash
-tailscale completion bash     # Bash completions
-tailscale completion zsh      # Zsh completions
-tailscale completion fish     # Fish completions
-tailscale completion powershell  # PowerShell completions
-```
-
-Install tab completion permanently:
-
-```bash
-# Bash (Linux)
-tailscale completion bash > /etc/bash_completion.d/tailscale
-
-# Zsh
-tailscale completion zsh > "${fpath[1]}/_tailscale"
-
-# Fish
-tailscale completion fish > ~/.config/fish/completions/tailscale.fish
-```
+---
 
 ## Operating the CLI
 
-When driving `tailscale` on the user's machine, prefer these patterns:
+Agent guidelines for automated CLI execution:
 
-**Verify before guessing.** If an example below fails with an unknown flag, the CLI version may differ from this reference. Run `tailscale help <subcommand>` to review the current flag set rather than retrying the same flag.
-
-**Prefer machine-readable output.** For any decision logic (selecting a device, checking online status, finding a peer's IP), use `tailscale status --json | jq ...` rather than parsing the human-readable table. The JSON shape is stable; the table format isn't guaranteed to be.
-
-**Resolve hostnames instead of hard-coding IPs.** `tailscale ip <hostname>` returns the current Tailscale IP for a peer — use it instead of pasting `100.x.y.z` from earlier output. Hostnames are stable; IPs can change on re-auth.
-
-**Confirm before destructive actions.** `tailscale logout` unregisters the device (different from `down`); `tailscale lock disable` requires the recovery secret and weakens the tailnet's security; `tailscale set --reset` reverts unspecified flags to defaults. Check the user's intent before running these.
-
-**Diagnostics flow** (eval-tested pattern for connectivity questions):
-
-```bash
-tailscale status              # Is the device online and which peers are visible?
-tailscale ping <hostname>     # Is the path direct (p2p) or relayed via DERP?
-tailscale netcheck            # NAT type, UDP reachability, DERP latencies
-tailscale status --json       # Full machine-readable state for deeper analysis
-```
-
-A DERP-relayed connection in `ping` output usually means UDP is blocked end-to-end or one side is behind a strict NAT — `netcheck` confirms which.
-
-**Privilege considerations.** Most `tailscale set` and `tailscale up` invocations need root on Linux (or membership in the `tailscale` operator group set via `tailscale set --operator=$USER`). On macOS/Windows, the GUI client typically owns the daemon; CLI changes may require elevated permission depending on platform.
-
-**When the CLI isn't installed.** If `tailscale` isn't on `$PATH`, don't fabricate output — tell the user, and either fetch `/docs/reference/tailscale-cli` for documentation purposes or point them at `references/installation.md` for setup.
+- **Verify before guessing**: Check `tailscale help <subcommand>` when encountering unknown flags.
+- **Prefer machine-readable output**: Use `tailscale status --json | jq ...` rather than scraping formatted tables.
+- **Resolve hostnames over static IPs**: Use `tailscale ip <hostname>` since MagicDNS hostnames remain stable across IP changes.
+- **Confirm before destructive actions**: Require confirmation before running `logout`, `lock disable`, or `set --reset`.
+- **Systematic troubleshooting**: Follow the 4-step diagnostics workflow in [cli-diagnostics.md](cli-diagnostics.md).
+- **Privilege management**: Linux modifications require root or `--operator=$USER` delegation.
+- **Missing binary fallback**: If `tailscale` is absent from `$PATH`, notify the user and reference [installation.md](installation.md).

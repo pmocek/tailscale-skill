@@ -66,10 +66,47 @@ Install from the Apple App Store or Google Play Store respectively. Authenticati
 
 ## Updating
 
-- **CLI**: `tailscale update`
-- **GUI apps**: Update through the app or app store
-- **Auto-update**: Configurable from the admin console or via MDM policies
+Tailscale can be updated via client CLI commands, package managers, or MDM policy:
+
+### `tailscale update`
+
+Apply client updates directly from the CLI (Linux standalone and macOS open-source variants):
+
+```bash
+tailscale update              # Check for and apply latest available update
+tailscale update --check      # Check for updates without installing
+tailscale update --yes        # Apply update without interactive confirmation
+tailscale update --track=stable  # Set track: stable or unstable
+```
+
+For unattended or scripted updates, use `sudo tailscale update --yes`.
+
+- **GUI apps**: Update through the native macOS/Windows application menu or respective app stores.
+- **Auto-update**: Enable automatic background updates via `tailscale set --auto-update` or configure centrally via MDM policies.
+
+## Shell tab completion
+
+Configure shell auto-completion for `tailscale` subcommands and flags:
+
+```bash
+# Generate completion script
+tailscale completion bash
+tailscale completion zsh
+tailscale completion fish
+tailscale completion powershell
+
+# Install permanently
+# Bash (Linux):
+tailscale completion bash | sudo tee /etc/bash_completion.d/tailscale > /dev/null
+
+# Zsh:
+tailscale completion zsh > "${fpath[1]}/_tailscale"
+
+# Fish:
+tailscale completion fish > ~/.config/fish/completions/tailscale.fish
+```
 
 ## Uninstalling
 
 Refer to Tailscale's uninstall documentation for platform-specific removal steps. On Linux, use your package manager (`apt remove tailscale`, `yum remove tailscale`).
+

@@ -90,10 +90,20 @@ A rollout that has worked across many tailnets:
 4. **Tags + groups** — model access (groups = humans, tags = machines/services).
 5. **Device posture** — define baseline postures, enforce via `srcPosture`.
 6. **MDM** — push Tailscale to managed devices with pre-approved + tagged auth keys for silent enrollment.
-7. **Session recording** (`references/session-recording.md`) for SSH audit trails.
+7. **Session recording** ([session-recording.md](session-recording.md)) for SSH audit trails.
 8. **Tailnet lock** for cryptographic node signing in high-security environments.
 
+### Inspecting system policies (`tailscale syspolicy`)
+
+On managed endpoints, inspect and reload MDM-pushed system policies:
+
+```bash
+tailscale syspolicy list      # View all active system policies enforced by MDM
+tailscale syspolicy reload    # Force client to reload system policy settings from MDM
+```
+
 ## Where to find current information
+
 
 ### Device approval & management
 
@@ -161,4 +171,4 @@ For **posture** questions, the inline attribute names (`node:os`, `node:tsAutoUp
 
 For **MDM / EDR / SCIM** vendor questions, **always fetch the vendor-specific page** — these are step-by-step setup guides with screenshots and exact field names that change as vendor user interfaces evolve. Don't paraphrase the inline mental model; quote the fetched page.
 
-For **bulk device operations** (list, delete, approve at scale), point the user at `references/api.md` for current REST endpoints — the shapes in the API drift more than ACL syntax does.
+For **bulk device operations** (list, delete, approve at scale), point the user at [api.md](api.md) for current REST endpoints — the shapes in the API drift more than ACL syntax does.
