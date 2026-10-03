@@ -12,27 +12,30 @@ Provide cleanly partitioned, budget-compliant reference documentation so coding 
 
 ### Validated
 
-- ✓ Core skill entrypoint (`skills/tailscale/SKILL.md`) with progressive disclosure routing — existing
-- ✓ Reference documentation covering 17 domain topics (access control, aperture, containers, etc.) — existing
-- ✓ Standard agentskills.io layout and BSD-3-Clause licensing — existing
+- ✓ Core skill entrypoint (`skills/tailscale/SKILL.md`) with progressive disclosure routing — v1.0
+- ✓ Reference documentation covering 20 domain topics (access control, aperture, containers, etc.) — v1.0
+- ✓ Standard agentskills.io layout and BSD-3-Clause licensing — v1.0
+- ✓ Decomposed oversized references (`cli.md`, `connectivity.md`, `tsnet.md`) to <= 2,000 tokens — v1.0 (REF-01, REF-02, REF-03)
+- ✓ Resolved orphaned reference files (`api.md`, `border0.md`, `installation.md`, `cli.md`) in `SKILL.md` — v1.0 (ROUT-01, ROUT-02, ROUT-03)
+- ✓ Verified internal markdown relative links and GFM heading anchors (85 links, 0 broken) — v1.0 (ROUT-04)
+- ✓ Strict automated quality verification suite (`scripts/verify.sh`) passing with 0 errors — v1.0 (QUAL-01, QUAL-02, QUAL-03)
 
-### Active
+### Active (Next Milestone Goals - v2)
 
-- [ ] Resolve orphaned reference files by linking `api.md`, `border0.md`, `cli.md`, and `installation.md` into `SKILL.md`
-- [ ] Refactor and split files exceeding 2,000 tokens (`cli.md`, `tsnet.md`, `connectivity.md`) into focused modules
-- [ ] Maintain strict relative link integrity and routing clarity across all reference files
-- [ ] Ensure universal compatibility across harnesses (Claude Code, Copilot, OpenCode, Antigravity)
+- [ ] Add OpenCode `AGENTS.md` permission shim file (ENH-01)
+- [ ] Update description in `SKILL.md` using the 3-part framework and generate 20-prompt trigger evaluation set (`trigger-evals.json`) (ENH-02)
+- [ ] Expand documentation with latest Tailscale features and administrative capabilities (ENH-03)
 
 ### Out of Scope
 
-- [Adding new Tailscale product features or guides] — Refactoring and reorganization of existing structure only
-- [Creating new executable helper scripts/tooling in the skill] — Pure declarative reference refactoring for this milestone
+- [Adding third-party VPN protocols unrelated to Tailscale] — Out of scope
+- [Creating heavy binary CLI dependencies] — Pure declarative reference and zero-dependency scripts only
 
 ## Context
 
-- Existing codebase is an Agent Skill conforming to the agentskills.io standard.
-- Audit via skill-forge tooling highlighted 4 orphaned reference files unlinked from `SKILL.md` and 3 reference files exceeding the 2,000-token ceiling (`cli.md` at 2,429 tokens, `connectivity.md` at 2,174 tokens, `tsnet.md` at 3,380 tokens).
-- Target is clean structural and progressive disclosure audit passage without context exhaustion.
+- Shipped v1.0 with 20 modular Tier 3 reference guides all strictly <= 1,664 tokens (budget ceiling: 2,000 tokens).
+- Root `SKILL.md` body is 725 tokens with complete progressive disclosure task routing.
+- Maintenance tooling (`scripts/verify.sh` and `scripts/check_links.py`) verified 100% compliant across spec conformity, disclosure orphan audit, token budgets, and link integrity.
 
 ## Constraints
 
@@ -44,26 +47,10 @@ Provide cleanly partitioned, budget-compliant reference documentation so coding 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Refactor and reorganize existing structure only | Keep milestone tightly focused on structural health and compliance | — Pending |
-| Split reference files exceeding 2,000 tokens | Prevent agent context window starvation during topic retrieval | — Pending |
-| Link all 4 orphaned references in SKILL.md | Pass progressive disclosure audit and ensure agent discoverability | — Pending |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+| Decompose reference files exceeding 2,000 tokens | Prevent agent context window starvation during topic retrieval | ✓ Good (v1.0) |
+| Link all orphaned references in `SKILL.md` | Pass progressive disclosure audit and ensure agent discoverability | ✓ Good (v1.0) |
+| Implement zero-dependency link checker `scripts/check_links.py` | Fast, portable validation without package manager overhead | ✓ Good (v1.0) |
+| Unified 4-stage verification runner `scripts/verify.sh` | Authoritative single entry point for pre-commit and CI verification | ✓ Good (v1.0) |
 
 ---
-*Last updated: 2026-10-02 after initialization*
+*Last updated: 2026-10-02 after v1.0 milestone*

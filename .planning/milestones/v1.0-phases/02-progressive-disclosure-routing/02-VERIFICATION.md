@@ -4,13 +4,15 @@ name: "Progressive Disclosure Routing"
 status: passed
 score: 8/8
 covered_files:
+  - .planning/phases/02-progressive-disclosure-routing/02-01-PLAN.md
+  - .planning/phases/02-progressive-disclosure-routing/02-01-SUMMARY.md
   - skills/tailscale/SKILL.md
   - skills/tailscale/references/api.md
   - skills/tailscale/references/device-management.md
   - skills/tailscale/references/enterprise.md
   - skills/tailscale/references/error-messages.md
   - skills/tailscale/references/exit-nodes.md
-covered_digest: "v2:sha256:7201e78f08741baa6b31ca930313cd34bc7352a7286fd29590409b4691030a62"
+covered_digest: "v2:sha256:86edaac4cd1a0af449ed2a3b0d61ff023f2bb9436cf1ad71e7383c39c0650e33"
 gaps: []
 ---
 
